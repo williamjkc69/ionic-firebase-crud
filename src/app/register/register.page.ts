@@ -6,7 +6,6 @@ import {
     NavController,
 } from "@ionic/angular";
 import { AngularFireAuth } from "@angular/fire/auth";
-import { threadId } from "worker_threads";
 
 @Component({
     selector: "app-register",
