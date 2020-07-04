@@ -1,29 +1,30 @@
 import { Component, OnInit } from "@angular/core";
-import { User } from "../models/user.model";
+import { Post } from "../models/post.model";
 import {
     ToastController,
     LoadingController,
     NavController,
 } from "@ionic/angular";
-import { AngularFireAuth } from "@angular/fire/auth";
+import { AngularFirestore } from "@angular/fire/firestore";
 
 @Component({
-    selector: "app-login",
-    templateUrl: "./login.page.html",
-    styleUrls: ["./login.page.scss"],
+    selector: "app-add-post",
+    templateUrl: "./add-post.page.html",
+    styleUrls: ["./add-post.page.scss"],
 })
-export class LoginPage implements OnInit {
+export class AddPostPage implements OnInit {
+    post = {} as Post;
+
     constructor(
         private toastCtrl: ToastController,
         private loadingCtrl: LoadingController,
-        private afAuth: AngularFireAuth,
         private navCtrl: NavController,
+        private firestore: AngularFirestore,
     ) {}
 
-    user = {} as User;
     ngOnInit() {}
 
-    async login(user: User) {
+    async createPost(post: Post) {
         if (this.formValidation()) {
             let loader = this.loadingCtrl.create({
                 message: "Please wait...",
@@ -31,26 +32,22 @@ export class LoginPage implements OnInit {
             (await loader).present();
 
             try {
-                await this.afAuth
-                    .signInWithEmailAndPassword(user.email, user.password)
-                    .then((data) => {
-                        console.log(data);
-                        this.navCtrl.navigateRoot("home");
-                    });
+                this.firestore.collection("post").add(post);
             } catch (e) {
                 this.showToast(e);
             }
             (await loader).dismiss();
+            this.navCtrl.navigateBack("home");
         }
     }
 
     formValidation() {
-        if (!this.user.email) {
-            this.showToast("Enter Email");
+        if (!this.post.title) {
+            this.showToast("Enter Title");
             return false;
         }
-        if (!this.user.password) {
-            this.showToast("Enter Password");
+        if (!this.post.details) {
+            this.showToast("Enter Details");
             return false;
         }
 

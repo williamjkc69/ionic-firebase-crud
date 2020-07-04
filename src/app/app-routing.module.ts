@@ -25,6 +25,14 @@ const routes: Routes = [
                 (m) => m.RegisterPageModule,
             ),
     },
+  {
+    path: 'add-post',
+    loadChildren: () => import('./add-post/add-post.module').then( m => m.AddPostPageModule)
+  },
+  {
+    path: 'edit-page/:id',
+    loadChildren: () => import('./edit-page/edit-page.module').then( m => m.EditPagePageModule)
+  },
 ];
 
 @NgModule({
